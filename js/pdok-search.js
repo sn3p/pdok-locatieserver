@@ -2,26 +2,33 @@
  * @class PDOKSearch
  * @classdesc API for searching the [PDOK Locatieserver](https://www.pdok.nl/pdok-locatieserver).
  *
+ * https://github.com/PDOK/locatieserver/wiki/API-Locatieserver
+ * https://api.pdok.nl/bzk/locatieserver/search/v3_1/ui/
+ *
  * @param {String} endpoint - PDOK Locatieserver API endpoint (defaults to `/free` endpoint).
  */
 
 class PDOKSearch {
-  static defaultEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free";
+  static apiEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1";
 
-  constructor(endpoint = PDOKSearch.defaultEndpoint) {
-    this.endpoint = endpoint;
+  constructor(endpoint) {
+    this.endpoint = endpoint || PDOKSearch.apiEndpoint;
   }
 
-  async query(params) {
+  // https://api.pdok.nl/bzk/locatieserver/search/v3_1/free
+  async free(params) {
     // Convert query object to Solr query string
     if (typeof params?.q === "object") {
       params["q"] = this.toSolrQuery(params["q"]);
     }
 
-    const url = new URL(this.endpoint);
+    // Construct API url
+    const url = new URL(this.endpoint + "/free");
     url.search = new URLSearchParams(params);
 
-    return fetch(url).then((response) => response.json());
+    // Fetch and return JSON response
+    const response = await fetch(url);
+    return await response.json();
   }
 
   toSolrQuery(object) {
