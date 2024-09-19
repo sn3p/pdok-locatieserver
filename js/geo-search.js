@@ -1,3 +1,4 @@
+import L from "leaflet";
 import PDOKSearch from "./pdok-search.js";
 
 class GeoSearch {
@@ -13,7 +14,6 @@ class GeoSearch {
 
     // Initial submit
     // this.form.dispatchEvent(new CustomEvent("submit", { cancelable: true }));
-
     this.handleResponse({
       response: {
         numFound: 1,

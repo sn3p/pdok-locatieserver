@@ -1,95 +1,88 @@
-<html>
+<!doctype html>
+<html lang="nl">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>GEO Search</title>
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <script type="module" src="./js/pdok-search.js"></script>
-  <script type="module" src="./js/geo-search.js"></script>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- <script type="importmap">
-    {
-      "imports": {
-        "circle": "https://example.com/shapes/circle.js"
-      }
-    }
-  </script> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+
+  <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-  <!-- TODO: tabs -->
-  <!-- TODO: <ul id="geo-search-results"></ul> -->
-
   <h1>PDOK Locatieserver Search</h1>
 
-  <section>
-    <form id="pdok-free-form">
-      <fieldset>
-        <legend><code>/free</code></legend>
-        <label>
-          <span>Postcode</span>
-          <input type="text" name="postcode" value="9724 AD">
-        </label>
-        <label>
-          <span>Huisnummer</span>
-          <input type="text" name="huis_nlt" value="3">
-        </label>
-        <button type="submit">Search</button>
-      </fieldset>
-      <div id="pdok-free-map" class="map"></div>
-    </form>
-    <div>
-      <!-- TODO: render request URL -->
-      <!-- <code class="response"><pre id="pdok-free-response"></pre></code> -->
-      <code class="response"><pre id="pdok-free-response">{
-  "response": {
-    "numFound": 1,
-    "start": 0,
-    "maxScore": 8.158252,
-    "numFoundExact": true,
-    "docs": [
-      {
-        "bron": "BAG",
-        "woonplaatscode": "1070",
-        "type": "adres",
-        "woonplaatsnaam": "Groningen",
-        "wijkcode": "WK001401",
-        "huis_nlt": "3",
-        "openbareruimtetype": "Weg",
-        "buurtnaam": "Oosterpoort",
-        "gemeentecode": "0014",
-        "rdf_seealso": "http://bag.basisregistraties.overheid.nl/bag/id/nummeraanduiding/0014200010875583",
-        "weergavenaam": "Zuiderpark 3, 9724AD Groningen",
-        "straatnaam_verkort": "Zuiderprk",
-        "id": "adr-a64c3eb5a79be1c8da5840dc931f4efe",
-        "gekoppeld_perceel": [
-          "GNG00-B-10361"
-        ],
-        "gemeentenaam": "Groningen",
-        "buurtcode": "BU00140101",
-        "wijknaam": "Oud-Zuid",
-        "identificatie": "0014010011068010-0014200010875583",
-        "openbareruimte_id": "0014300010786255",
-        "waterschapsnaam": "Waterschap Hunze en Aa's",
-        "provinciecode": "PV20",
-        "postcode": "9724AD",
-        "provincienaam": "Groningen",
-        "centroide_ll": "POINT(6.57236951 53.21219828)",
-        "nummeraanduiding_id": "0014200010875583",
-        "waterschapscode": "33",
-        "adresseerbaarobject_id": "0014010011068010",
-        "huisnummer": 3,
-        "provincieafkorting": "GR",
-        "centroide_rd": "POINT(234174.916 581270.45)",
-        "straatnaam": "Zuiderpark",
-        "score": 8.158252
-      }
-    ]
-  }
-}</pre></code>
-    </div>
-  </section>
+  <ul class="nav nav-tabs" id="pdok-apis" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="pdok-free-tab" data-bs-toggle="tab" data-bs-target="#pdok-free-tab-pane" type="button" role="tab" aria-controls="pdok-free-tab-pane" aria-selected="true">/free</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pdok-suggest-tab" data-bs-toggle="tab" data-bs-target="#pdok-suggest-tab-pane" type="button" role="tab" aria-controls="pdok-suggest-tab-pane" aria-selected="false">/suggest</button>
+    </li>
+  </ul>
+  <div class="tab-content border" id="pdok-apis-content">
+    <div class="tab-pane fade show active" id="pdok-free-tab-pane" role="tabpanel" aria-labelledby="pdok-free-tab" tabindex="0">
 
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-6">
+
+            <form id="pdok-free-form" class="row gy-2 gx-3 align-items-bottom">
+              <div class="col-auto">
+                <label class="form-label" for="pdok-free-form-postcode">Postcode</label>
+                <input type="text" name="postcode" value="9724 AD" class="form-control" id="pdok-free-form-postcode">
+              </div>
+
+              <div class="col-auto">
+                <label class="form-label" for="pdok-free-form-huisnummer">Huisnummer</label>
+                <input type="text" name="huis_nlt" value="3" class="form-control" id="pdok-free-form-huisnummer">
+              </div>
+
+              <div class="col-auto">
+                <button type="submit" class="btn btn-secondary btn-sm">Search</button>
+              </div>
+            </form>
+
+            <div id="pdok-free-map" class="map"></div>
+            <!-- TODO: render lat/lon -->
+          </div>
+
+          <div class="col-md-6">
+            <!-- TODO: render request URL -->
+            <!-- TODO: render result count -->
+            <pre class="response border"><code id="pdok-free-response"></code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="tab-pane fade" id="pdok-suggest-tab-pane" role="tabpanel" aria-labelledby="pdok-suggest-tab" tabindex="0">
+      ...
+    </div>
+  </div>
+
+  <script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1/dist/es-module-shims.min.js" crossorigin="anonymous"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "@popperjs/core": "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/esm/popper.min.js",
+        "bootstrap": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.esm.min.js",
+        "leaflet": "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/+esm"
+      }
+    }
+  </script>
+
+  <script type="module" src="./js/pdok-search.js"></script>
+  <script type="module" src="./js/geo-search.js"></script>
   <script type="module">
+    // import * as bootstrap from "bootstrap"
+    // import * as Popper from "@popperjs/core"
+    import { Tab } from "bootstrap";
     import GeoSearch from "./js/geo-search.js";
 
     new GeoSearch();
