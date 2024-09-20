@@ -1,15 +1,17 @@
+import PDOK from "pdok";
 import L from "leaflet";
-import PDOKSearch from "./pdok-search.js";
 
-class GeoSearch {
-  constructor() {
-    this.pdok = new PDOKSearch();
+class PDOKFree {
+  constructor(selector) {
+    this.element = document.querySelector(selector);
+    this.element._pdok = this;
 
-    this.response = document.getElementById("pdok-free-response");
+    this.form = this.element.querySelector("form");
+    this.response = this.element.querySelector(".response");
 
+    this.pdok = new PDOK();
     this.initMap();
 
-    this.form = document.getElementById("pdok-free-form");
     this.form.addEventListener("submit", this.onSubmit.bind(this));
 
     // Initial submit
@@ -62,7 +64,8 @@ class GeoSearch {
   }
 
   initMap() {
-    this.map = L.map("pdok-free-map");
+    const mapContainer = this.element.querySelector(".map");
+    this.map = L.map(mapContainer);
 
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
@@ -77,7 +80,9 @@ class GeoSearch {
 
     // Form data to query object
     const formData = new FormData(this.form);
-    const params = { q: Object.fromEntries(formData) };
+    const query = Object.fromEntries(formData);
+    const params = { q: query };
+    params.fq = "type:adres";
 
     // Search PDOK Locatieserver
     const response = await this.pdok.free(params);
@@ -125,4 +130,4 @@ class GeoSearch {
   }
 }
 
-export default GeoSearch;
+export default PDOKFree;

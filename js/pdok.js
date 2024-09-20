@@ -1,18 +1,18 @@
 /**
- * @class PDOKSearch
+ * @class PDOK
  * @classdesc API for searching the [PDOK Locatieserver](https://www.pdok.nl/pdok-locatieserver).
  *
  * https://github.com/PDOK/locatieserver/wiki/API-Locatieserver
  * https://api.pdok.nl/bzk/locatieserver/search/v3_1/ui/
  *
- * @param {String} endpoint - PDOK Locatieserver API endpoint (defaults to `/free` endpoint).
+ * @param {String} endpoint - PDOK Locatieserver API base endpoint.
  */
 
-class PDOKSearch {
+class PDOK {
   static apiEndpoint = "https://api.pdok.nl/bzk/locatieserver/search/v3_1";
 
   constructor(endpoint) {
-    this.endpoint = endpoint || PDOKSearch.apiEndpoint;
+    this.endpoint = endpoint || PDOK.apiEndpoint;
   }
 
   // https://api.pdok.nl/bzk/locatieserver/search/v3_1/free
@@ -24,6 +24,17 @@ class PDOKSearch {
 
     // Construct API url
     const url = new URL(this.endpoint + "/free");
+    url.search = new URLSearchParams(params);
+
+    // Fetch and return JSON response
+    const response = await fetch(url);
+    return await response.json();
+  }
+
+  // https://api.pdok.nl/bzk/locatieserver/search/v3_1/suggest
+  async suggest(params) {
+    // Construct API url
+    const url = new URL(this.endpoint + "/suggest");
     url.search = new URLSearchParams(params);
 
     // Fetch and return JSON response
@@ -57,4 +68,4 @@ class PDOKSearch {
   }
 }
 
-export default PDOKSearch;
+export default PDOK;
