@@ -11,6 +11,7 @@ class PDOKSuggest {
     this.response = this.element.querySelector(".response");
 
     this.resultsList = new ResultsList(".results");
+    this.resultsList.addEventListener("result-click", this.onResultClick.bind(this));
 
     this.pdok = new PDOK();
     this.initMap();
@@ -94,7 +95,6 @@ class PDOKSuggest {
     // Check for results
     if (!results.length) {
       // TODO: clear/hide map
-      this.results.innerHTML = "Geen resultaten gevonden";
       return;
     }
 
@@ -117,6 +117,14 @@ class PDOKSuggest {
 
     // Set view
     this.map.setView(latLon, zoom);
+  }
+
+  onResultClick({ detail: result }) {
+    console.log(result);
+
+    // TODO: set value in input field
+
+    this.renderResult(result);
   }
 
   getCoordinates(result) {

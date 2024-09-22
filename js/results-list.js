@@ -33,12 +33,30 @@ class ResultsList {
 
   onResultClick(event) {
     // Check if we clicked a result item
-    const button = event.target.closest(".list-group-item");
+    const button = event.target.closest(".list-group-item-action");
     if (!button) return;
 
+    // Parse result data
     const result = JSON.parse(decodeURIComponent(button.dataset.result));
-    console.log(result);
-    // this.renderResult(result);
+
+    // Dispatch custom event
+    this.dispatchEvent(new CustomEvent("result-click", { detail: result }));
+  }
+
+  /*
+  Proxy event methods to element
+  */
+
+  dispatchEvent(event) {
+    this.element.dispatchEvent(event);
+  }
+
+  addEventListener(type, listener) {
+    this.element.addEventListener(type, listener);
+  }
+
+  removeEventListener(type, listener) {
+    this.element.removeEventListener(type, listener);
   }
 }
 
