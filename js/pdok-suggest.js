@@ -1,5 +1,6 @@
-import PDOK from "pdok";
 import L from "leaflet";
+import PDOK from "./pdok.js";
+import ResultsList from "./results-list.js";
 
 class PDOKSuggest {
   constructor(selector) {
@@ -8,6 +9,8 @@ class PDOKSuggest {
 
     this.form = this.element.querySelector("form");
     this.response = this.element.querySelector(".response");
+
+    this.resultsList = new ResultsList(".results");
 
     this.pdok = new PDOK();
     this.initMap();
@@ -24,10 +27,12 @@ class PDOKSuggest {
         numFoundExact: true,
         docs: [
           {
+            id: "adr-c5dc8866579d22ee9421624b86871a2a",
             weergavenaam: "Zuiderpark 3, 1433PP Kudelstaart",
             centroide_ll: "POINT(4.74668107 52.23025982)",
           },
           {
+            id: "adr-8a86c764c18df2cd6391eb48cb9aec35",
             weergavenaam: "Zuiderpark 3, 1771AA Wieringerwerf",
             centroide_ll: "POINT(5.02217165 52.84774227)",
           },
@@ -35,10 +40,10 @@ class PDOKSuggest {
       },
       highlighting: {
         "adr-c5dc8866579d22ee9421624b86871a2a": {
-          suggest: ["Zuiderpark 3, 1433PP Kudelstaart"],
+          suggest: ["<b>Zuiderpark 3</b>, 1433PP Kudelstaart"],
         },
         "adr-8a86c764c18df2cd6391eb48cb9aec35": {
-          suggest: ["Zuiderpark 3, 1771AA Wieringerwerf"],
+          suggest: ["<b>Zuiderpark 3</b>, 1771AA Wieringerwerf"],
         },
       },
       spellcheck: {
@@ -67,7 +72,7 @@ class PDOKSuggest {
     const formData = new FormData(this.form);
     const params = Object.fromEntries(formData);
     params.rows = 5;
-    params.fl = "weergavenaam,centroide_ll";
+    params.fl = "id,weergavenaam,centroide_ll";
     // params.fq = "*:*";
 
     // Search PDOK Locatieserver
@@ -81,12 +86,15 @@ class PDOKSuggest {
     // Preview response
     this.response.innerHTML = JSON.stringify(response, null, 2);
 
-    // Check for results
     const results = response.response.docs;
+
+    // List results
+    this.resultsList.render(response);
+
+    // Check for results
     if (!results.length) {
       // TODO: clear/hide map
-      // TODO: render no restults found
-      console.warn("No results found");
+      this.results.innerHTML = "Geen resultaten gevonden";
       return;
     }
 

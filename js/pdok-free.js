@@ -1,5 +1,5 @@
-import PDOK from "pdok";
 import L from "leaflet";
+import PDOK from "./pdok.js";
 
 class PDOKFree {
   constructor(selector) {
