@@ -1,17 +1,20 @@
-import L from "leaflet";
 import PDOK from "./pdok.js";
+import Map from "./map.js";
 
 class PDOKFree {
   constructor(selector) {
     this.element = document.querySelector(selector);
     this.element._pdok = this;
 
-    this.form = this.element.querySelector("form");
+    this.pdok = new PDOK();
     this.response = this.element.querySelector(".response");
 
-    this.pdok = new PDOK();
-    this.initMap();
+    // Map
+    const mapElement = this.element.querySelector(".map");
+    this.map = new Map(mapElement);
 
+    // Form
+    this.form = this.element.querySelector("form");
     this.form.addEventListener("submit", this.onSubmit.bind(this));
 
     // Initial submit
@@ -63,18 +66,6 @@ class PDOKFree {
     });
   }
 
-  initMap() {
-    const mapContainer = this.element.querySelector(".map");
-    this.map = L.map(mapContainer);
-
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 18,
-      scrollWheelZoom: false,
-    }).addTo(this.map);
-
-    this.mapMarkers = L.layerGroup().addTo(this.map);
-  }
-
   async onSubmit(event) {
     event.preventDefault();
 
@@ -109,19 +100,7 @@ class PDOKFree {
 
   renderResult(result) {
     const latLon = this.getCoordinates(result);
-
-    this.setMap(latLon);
-  }
-
-  setMap(latLon, zoom = 16) {
-    // Clear previous markers
-    this.mapMarkers.clearLayers();
-
-    // Add new marker
-    L.marker(latLon).addTo(this.mapMarkers);
-
-    // Set view
-    this.map.setView(latLon, zoom);
+    this.map.setView(latLon);
   }
 
   getCoordinates(result) {

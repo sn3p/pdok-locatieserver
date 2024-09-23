@@ -1,6 +1,6 @@
 class ResultsList {
-  constructor(selector) {
-    this.element = document.querySelector(selector);
+  constructor(element) {
+    this.element = element;
 
     this.element.addEventListener("click", this.onResultClick.bind(this));
   }

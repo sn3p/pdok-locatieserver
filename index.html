@@ -122,7 +122,8 @@
         history.replaceState(null, null, link.href);
 
         // Fix map glitches
-        tabPanel._pdok.map.invalidateSize();
+        console.log(tabPanel._pdok.map);
+        tabPanel._pdok.map.reload();
       });
     });
 

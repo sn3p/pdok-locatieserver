@@ -1,21 +1,26 @@
-import L from "leaflet";
 import PDOK from "./pdok.js";
 import ResultsList from "./results-list.js";
+import Map from "./map.js";
 
 class PDOKSuggest {
   constructor(selector) {
     this.element = document.querySelector(selector);
     this.element._pdok = this;
 
-    this.form = this.element.querySelector("form");
+    this.pdok = new PDOK();
     this.response = this.element.querySelector(".response");
 
-    this.resultsList = new ResultsList(".results");
+    // Map
+    const mapElement = this.element.querySelector(".map");
+    this.map = new Map(mapElement);
+
+    // Results list
+    const resultsListElement = this.element.querySelector(".results");
+    this.resultsList = new ResultsList(resultsListElement);
     this.resultsList.addEventListener("result-click", this.onResultClick.bind(this));
 
-    this.pdok = new PDOK();
-    this.initMap();
-
+    // Form
+    this.form = this.element.querySelector("form");
     this.form.addEventListener("submit", this.onSubmit.bind(this));
 
     // Initial submit
@@ -52,18 +57,6 @@ class PDOKSuggest {
         collations: [],
       },
     });
-  }
-
-  initMap() {
-    const mapContainer = this.element.querySelector(".map");
-    this.map = L.map(mapContainer);
-
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 18,
-      scrollWheelZoom: false,
-    }).addTo(this.map);
-
-    this.mapMarkers = L.layerGroup().addTo(this.map);
   }
 
   async onSubmit(event) {
@@ -104,26 +97,13 @@ class PDOKSuggest {
 
   renderResult(result) {
     const latLon = this.getCoordinates(result);
-
-    this.setMap(latLon);
-  }
-
-  setMap(latLon, zoom = 16) {
-    // Clear previous markers
-    this.mapMarkers.clearLayers();
-
-    // Add new marker
-    L.marker(latLon).addTo(this.mapMarkers);
-
-    // Set view
-    this.map.setView(latLon, zoom);
+    this.map.setView(latLon);
   }
 
   onResultClick({ detail: result }) {
     console.log(result);
 
     // TODO: set value in input field
-
     this.renderResult(result);
   }
 
