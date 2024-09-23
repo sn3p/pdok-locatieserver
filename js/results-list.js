@@ -13,6 +13,10 @@ class ResultsList {
     }
   }
 
+  clear() {
+    this.element.innerHTML = "";
+  }
+
   renderResults({ response, highlighting }) {
     this.element.innerHTML = response.docs
       .map((result) => this.resultHTML(result, highlighting))
