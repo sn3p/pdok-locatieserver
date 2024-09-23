@@ -20,14 +20,14 @@
   <!-- TODO: link to tabs using hash -->
   <ul class="nav nav-tabs" id="pdok-apis" role="tablist">
     <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="pdok-free-tab" data-bs-toggle="tab" data-bs-target="#pdok-free-tab-pane" type="button" role="tab" aria-controls="pdok-free-tab-pane" aria-selected="true">/free</button>
+      <a href="#free" class="nav-link active" id="free-tab" data-bs-toggle="tab" data-bs-target="#free-pane" type="button" role="tab" aria-controls="free-pane" aria-selected="true">/free</a>
     </li>
     <li class="nav-item" role="presentation">
-      <button class="nav-link" id="pdok-suggest-tab" data-bs-toggle="tab" data-bs-target="#pdok-suggest-tab-pane" type="button" role="tab" aria-controls="pdok-suggest-tab-pane" aria-selected="false">/suggest</button>
+      <a href="#suggest" class="nav-link" id="suggest-tab" data-bs-toggle="tab" data-bs-target="#suggest-pane" type="button" role="tab" aria-controls="suggest-pane" aria-selected="false">/suggest</a>
     </li>
   </ul>
   <div class="tab-content border">
-    <div class="tab-pane fade show active" id="pdok-free-tab-pane" role="tabpanel" aria-labelledby="pdok-free-tab" tabindex="0">
+    <div class="tab-pane fade show active" id="free-pane" role="tabpanel" aria-labelledby="free-tab" tabindex="0">
 
       <div class="container-fluid">
         <div class="row">
@@ -35,17 +35,17 @@
 
             <form class="row gy-2 d-flex align-items-end">
               <div class="col-5">
-                <label class="form-label" for="pdok-free-form-postcode">Postcode</label>
-                <input type="text" name="postcode" value="9724 AD" class="form-control" id="pdok-free-form-postcode">
+                <label class="form-label" for="free-form-postcode">Postcode</label>
+                <input type="text" name="postcode" value="9724 AD" class="form-control" id="free-form-postcode">
               </div>
 
-              <div class="col-5">
-                <label class="form-label" for="pdok-free-form-huisnummer">Huisnummer</label>
-                <input type="text" name="huis_nlt" value="3" class="form-control" id="pdok-free-form-huisnummer">
+              <div class="col-3">
+                <label class="form-label" for="free-form-huisnummer">Huisnummer</label>
+                <input type="text" name="huis_nlt" value="3" class="form-control" id="free-form-huisnummer">
               </div>
 
               <div class="col-auto">
-                <button type="submit" class="btn btn-secondary btn-sm">Search</button>
+                <button type="submit" class="btn btn-outline-secondary">Search</button>
               </div>
             </form>
 
@@ -62,20 +62,16 @@
       </div>
 
     </div>
-    <div class="tab-pane fade" id="pdok-suggest-tab-pane" role="tabpanel" aria-labelledby="pdok-suggest-tab" tabindex="0">
+    <div class="tab-pane fade" id="suggest-pane" role="tabpanel" aria-labelledby="suggest-tab" tabindex="0">
 
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-6">
 
-            <form class="row gy-2 d-flex align-items-end">
-              <div class="col-auto">
-                <label class="form-label" for="suggest-form-query">Search</label>
-                <input type="text" name="q" value="Zuiderpark 3" class="form-control" id="suggest-form-query" placeholder="Zoek naar locatie">
-              </div>
-
-              <div class="col-auto">
-                <button type="submit" class="btn btn-secondary btn-sm">Search</button>
+            <form class="row gy-2">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Zoek naar locatie" aria-label="Locatie" aria-describedby="suggest-form-submit">
+                <button value="Zuiderpark 3" class="btn btn-outline-secondary" type="submit" id="suggest-form-submit">Search</button>
               </div>
             </form>
 
@@ -112,18 +108,33 @@
     import PDOKFree from "./js/pdok-free.js";
     import PDOKSuggest from "./js/pdok-suggest.js";
 
+    // Initialize PDOK demo's
+    new PDOKFree("#free-pane");
+    new PDOKSuggest("#suggest-pane");
+
     // Tab shown event listeners
-    [...document.querySelectorAll('button[data-bs-toggle="tab"]')].forEach((tabButton) => {
+    [...document.querySelectorAll('[data-bs-toggle="tab"]')].forEach((tabButton) => {
       tabButton.addEventListener("shown.bs.tab", (event) => {
-        // Get the tab panel
-        const tabPanel = document.querySelector(event.target.dataset.bsTarget);
+        const link = event.target;
+        const tabPanel = document.querySelector(link.dataset.bsTarget);
+
+        // Update the URL
+        history.replaceState(null, null, link.href);
+
         // Fix map glitches
         tabPanel._pdok.map.invalidateSize();
       });
     });
 
-    new PDOKFree("#pdok-free-tab-pane");
-    new PDOKSuggest("#pdok-suggest-tab-pane");
+    document.addEventListener("DOMContentLoaded", () => {
+      // Active tab on page load
+      const { hash } = window.location;
+      const tab = document.querySelector(`[data-bs-toggle="tab"][href="${hash}"]`);
+
+      if (tab) {
+        bootstrap.Tab.getOrCreateInstance(tab).show()
+      }
+    });
   </script>
 </body>
 </html>

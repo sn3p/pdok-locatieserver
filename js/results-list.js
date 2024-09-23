@@ -29,6 +29,7 @@ class ResultsList {
 
   renderNoResults() {
     this.element.innerHTML = `<div class="list-group-item">Geen locatie gevonden</div>`;
+    // TODO: auto hide after some time
   }
 
   onResultClick(event) {
