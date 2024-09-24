@@ -107,8 +107,10 @@ class PDOKSuggest {
   onShow() {
     this.map.reload();
 
-    // Check user location
-    this.useCurrentCoordinates();
+    // Check user location if lat and lon are not set
+    if (!this.form.lat.value || !this.form.lon.value) {
+      this.useCurrentCoordinates();
+    }
   }
 
   useCurrentCoordinates() {
