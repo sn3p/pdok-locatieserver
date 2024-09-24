@@ -5,10 +5,10 @@ class Map {
     this.element = element;
     this.map = L.map(this.element);
 
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    this.tileLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
       scrollWheelZoom: false,
-    }).addTo(this.map);
+    });
 
     this.markers = L.layerGroup().addTo(this.map);
   }
@@ -17,7 +17,8 @@ class Map {
     // Clear previous markers
     this.clear();
 
-    // Add new marker
+    // Add tile layer and marker
+    this.tileLayer.addTo(this.map);
     L.marker(latLon).addTo(this.markers);
 
     // Set view
@@ -25,10 +26,12 @@ class Map {
   }
 
   clear() {
+    // Remove tile layer and markers
+    this.tileLayer.remove();
     this.markers.clearLayers();
   }
 
-  reload() {
+  refresh() {
     this.map.invalidateSize();
   }
 }

@@ -12,10 +12,6 @@ class PDOKSuggest {
     this.pdok = new PDOK();
     this.response = this.element.querySelector(".response");
 
-    // Map
-    const mapElement = this.element.querySelector(".map");
-    this.map = new Map(mapElement);
-
     // Results list
     const resultsListElement = this.element.querySelector(".results");
     this.resultsList = new ResultsList(resultsListElement);
@@ -23,9 +19,15 @@ class PDOKSuggest {
 
     // Form
     this.form = this.element.querySelector("form");
-    this.queryInput = this.form.querySelector("input[name=q]");
     this.form.addEventListener("submit", this.onSubmit.bind(this));
     this.form.addEventListener("input", debounce(this.dispatchSubmit.bind(this), 500));
+
+    // Map
+    const mapElement = this.element.querySelector(".map");
+    this.map = new Map(mapElement);
+
+    // Query input
+    this.queryInput = this.form.querySelector("input[name=q]");
 
     // Enable current location when available
     const useCurrentLocationLink = this.form.querySelector("#suggest-form-current-location");
@@ -60,10 +62,10 @@ class PDOKSuggest {
   }
 
   async query(params) {
+    // TODO: Handle errors
+
     // Search PDOK Locatieserver
     const response = await this.pdok.suggest(params);
-
-    // TODO: Handle errors
 
     // Handle response
     this.handleResponse(response);
@@ -105,7 +107,7 @@ class PDOKSuggest {
   }
 
   onShow() {
-    this.map.reload();
+    this.map.refresh();
 
     // Check user location if lat and lon are not set
     if (!this.form.lat.value || !this.form.lon.value) {

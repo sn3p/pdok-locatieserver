@@ -1,3 +1,4 @@
+import debounce from "debounce";
 import PDOK from "./pdok.js";
 import Map from "./map.js";
 
@@ -9,19 +10,24 @@ class PDOKFree {
     this.pdok = new PDOK();
     this.response = this.element.querySelector(".response");
 
+    // Form
+    this.form = this.element.querySelector("form");
+    this.form.addEventListener("submit", this.onSubmit.bind(this));
+    this.form.addEventListener("input", debounce(this.dispatchSubmit.bind(this), 500));
+
     // Map
     const mapElement = this.element.querySelector(".map");
     this.map = new Map(mapElement);
 
-    // Form
-    this.form = this.element.querySelector("form");
-    this.form.addEventListener("submit", this.onSubmit.bind(this));
-
     // Initial submit
+    this.dispatchSubmit();
+  }
+
+  dispatchSubmit() {
     this.form.dispatchEvent(new CustomEvent("submit", { cancelable: true }));
   }
 
-  async onSubmit(event) {
+  onSubmit(event) {
     event.preventDefault();
 
     // Form data to query object
@@ -29,6 +35,13 @@ class PDOKFree {
     const query = Object.fromEntries(formData);
     const params = { q: query };
     params.fq = "type:adres";
+
+    // Search PDOK Locatieserver
+    this.query(params);
+  }
+
+  async query(params) {
+    // TODO: Handle errors
 
     // Search PDOK Locatieserver
     const response = await this.pdok.free(params);
@@ -44,8 +57,7 @@ class PDOKFree {
     // Check for results
     const results = response.response.docs;
     if (!results.length) {
-      // TODO: clear/hide map
-      console.warn("No results found");
+      this.map.clear();
       return;
     }
 
@@ -64,7 +76,7 @@ class PDOKFree {
   }
 
   onShow() {
-    this.map.reload();
+    this.map.refresh();
   }
 }
 
