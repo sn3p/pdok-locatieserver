@@ -1,3 +1,4 @@
+import { Collapse } from "bootstrap";
 import debounce from "debounce";
 import PDOK from "./pdok.js";
 import ResultsList from "./results-list.js";
@@ -24,10 +25,21 @@ class PDOKSuggest {
     this.form = this.element.querySelector("form");
     this.queryInput = this.form.querySelector("input[name=q]");
     this.form.addEventListener("submit", this.onSubmit.bind(this));
-    this.form.addEventListener("input", debounce(this.onInput.bind(this), 500));
+    this.form.addEventListener("input", debounce(this.dispatchSubmit.bind(this), 500));
+
+    // Enable current location when available
+    const useCurrentLocationLink = this.form.querySelector("#suggest-form-current-location");
+    if ("geolocation" in navigator) {
+      useCurrentLocationLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        this.useCurrentCoordinates();
+      });
+    } else {
+      useCurrentLocationLink.remove();
+    }
   }
 
-  onInput(event) {
+  dispatchSubmit() {
     this.form.dispatchEvent(new CustomEvent("submit", { cancelable: true }));
   }
 
@@ -37,8 +49,8 @@ class PDOKSuggest {
     // Form data to query object with removed empty values
     const params = Object.fromEntries([...new FormData(this.form)].filter(([_, v]) => v !== ""));
 
-    // Make sure query is at least 3 characters
-    if (params.q.length < 3) {
+    // Make sure we have a query of at least 3 characters
+    if (!params.q || params.q.length < 3) {
       this.resultsList.clear();
       return;
     }
@@ -50,6 +62,8 @@ class PDOKSuggest {
   async query(params) {
     // Search PDOK Locatieserver
     const response = await this.pdok.suggest(params);
+
+    // TODO: Handle errors
 
     // Handle response
     this.handleResponse(response);
@@ -101,16 +115,20 @@ class PDOKSuggest {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          // Show advanced form
+          const advancedElement = this.form.querySelector("#suggest-form-advanced");
+          Collapse.getOrCreateInstance(advancedElement).show();
+
+          // Set coordinates
           this.form.lat.value = position.coords.latitude;
           this.form.lon.value = position.coords.longitude;
-          return position.coords;
+
+          this.dispatchSubmit();
         },
         (error) => console.error(error),
         { enableHighAccuracy: true }
       );
     }
-
-    return false;
   }
 }
 
