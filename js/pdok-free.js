@@ -62,6 +62,10 @@ class PDOKFree {
     const [lon, lat] = result.centroide_ll.match(/\(([^)]+)\)/)[1].split(" ");
     return [lat, lon];
   }
+
+  onShow() {
+    this.map.reload();
+  }
 }
 
 export default PDOKFree;

@@ -102,3 +102,6 @@ body {
   background-color: #f8f8f8;
   border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
 }
+.form-text {
+  /* opacity: 0.8; */
+}

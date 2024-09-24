@@ -89,6 +89,29 @@ class PDOKSuggest {
     const [lon, lat] = result.centroide_ll.match(/\(([^)]+)\)/)[1].split(" ");
     return [lat, lon];
   }
+
+  onShow() {
+    this.map.reload();
+
+    // Check user location
+    this.useCurrentCoordinates();
+  }
+
+  useCurrentCoordinates() {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.form.lat.value = position.coords.latitude;
+          this.form.lon.value = position.coords.longitude;
+          return position.coords;
+        },
+        (error) => console.error(error),
+        { enableHighAccuracy: true }
+      );
+    }
+
+    return false;
+  }
 }
 
 export default PDOKSuggest;
