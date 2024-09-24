@@ -80,21 +80,46 @@
                 <input value="Zuiderpark 3" type="text" name="q" class="form-control" placeholder="Zoek een locatie" aria-label="Locatie" aria-describedby="suggest-form-submit">
                 <button class="btn btn-outline-secondary" type="submit" id="suggest-form-submit">Search</button>
               </div>
-              <div>
+              <div class="advanced">
                 <span type="button" class="btn btn-link btn-sm" data-bs-toggle="collapse" data-bs-target="#suggest-form-advanced" aria-expanded="false" aria-controls="suggest-form-advanced">advanced</span>
                 <div class="collapse" id="suggest-form-advanced">
                   <div class="card card-body">
+                    <div class="alert alert-primary" role="alert">
+                      Voor meer informatie over de parameters van de Suggest API:
+                      <a href="https://api.pdok.nl/bzk/locatieserver/search/v3_1/ui/#/Locatieserver/suggest" target="_blank">
+                        https://api.pdok.nl/bzk/locatieserver/search/v3_1/ui/#/Locatieserver/suggest
+                      </a>
+                    </div>
+
+                    <div class="row mb-2 g-2">
+                      <div id="suggest-form-coordinates-help" class="form-text">De resultaten worden gesorteerd op afstand tot deze coordinaten.</div>
+                      <div class="col-md">
+                        <div class="form-floating">
+                          <input name="lat" value="53.21219828" type="text" pattern="^\d*\.?\d*$" class="form-control" id="suggest-form-lat" aria-describedby="suggest-form-coordinate-help">
+                          <label for="suggest-form-lat">lat</label>
+                        </div>
+                      </div>
+                      <div class="col-md">
+                        <div class="form-floating">
+                          <input name="lon" value="6.57236951" type="text" pattern="^\d*\.?\d*$" class="form-control" id="suggest-form-lon" aria-describedby="suggest-form-coordinates-help">
+                          <label for="suggest-form-lon">lon</label>
+                        </div>
+                      </div>
+                    </div>
+
                     <div class="form-floating mb-2">
                       <input type="text" name="rows" value="5" class="form-control form-control-sm" id="suggest-form-rows">
                       <label for="suggest-form-rows">rows</label>
                     </div>
+
                     <div class="form-floating mb-2">
+                      <input type="text" name="fl" value="id,weergavenaam,centroide_ll" class="form-control form-control-sm" id="suggest-form-fl" aria-describedby="suggest-form-fl-help">
+                      <label for="suggest-form-fl">fl</label>
+                    </div>
+
+                    <div class="form-floating">
                       <input type="text" name="fq" value="type:adres" class="form-control form-control-sm" id="suggest-form-fq">
                       <label for="suggest-form-fq">fq</label>
-                    </div>
-                    <div class="form-floating">
-                      <input type="text" name="fl" value="id,weergavenaam,centroide_ll" class="form-control form-control-sm" id="suggest-form-fl">
-                      <label for="suggest-form-fl">fl</label>
                     </div>
                   </div>
                 </div>

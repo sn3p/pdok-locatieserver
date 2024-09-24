@@ -84,8 +84,21 @@ body {
   margin: 0;
   min-height: 5em;
   padding: 0.5em;
+  position: relative;
 }
 .response:empty::after {
   color: #ccc;
-  content: "Resultaten worden hier weergegeven";
+  content: "Geen resultaten om weer te geven.";
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.advanced .alert {
+  font-size: 0.85em;
+}
+.advanced .card {
+  background-color: #f8f8f8;
+  border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
 }
