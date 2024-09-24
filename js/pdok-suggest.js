@@ -25,40 +25,6 @@ class PDOKSuggest {
     this.queryInput = this.form.querySelector("input[name=q]");
     this.form.addEventListener("submit", this.onSubmit.bind(this));
     this.form.addEventListener("input", debounce(this.onInput.bind(this), 500));
-
-    // Initial submit
-    // this.handleResponse({
-    //   response: {
-    //     numFound: 272,
-    //     start: 0,
-    //     maxScore: 7.258797,
-    //     numFoundExact: true,
-    //     docs: [
-    //       {
-    //         id: "adr-c5dc8866579d22ee9421624b86871a2a",
-    //         weergavenaam: "Zuiderpark 3, 1433PP Kudelstaart",
-    //         centroide_ll: "POINT(4.74668107 52.23025982)",
-    //       },
-    //       {
-    //         id: "adr-8a86c764c18df2cd6391eb48cb9aec35",
-    //         weergavenaam: "Zuiderpark 3, 1771AA Wieringerwerf",
-    //         centroide_ll: "POINT(5.02217165 52.84774227)",
-    //       },
-    //     ],
-    //   },
-    //   highlighting: {
-    //     "adr-c5dc8866579d22ee9421624b86871a2a": {
-    //       suggest: ["<b>Zuiderpark 3</b>, 1433PP Kudelstaart"],
-    //     },
-    //     "adr-8a86c764c18df2cd6391eb48cb9aec35": {
-    //       suggest: ["<b>Zuiderpark 3</b>, 1771AA Wieringerwerf"],
-    //     },
-    //   },
-    //   spellcheck: {
-    //     suggestions: [],
-    //     collations: [],
-    //   },
-    // });
   }
 
   onInput(event) {
@@ -68,9 +34,8 @@ class PDOKSuggest {
   onSubmit(event) {
     event.preventDefault();
 
-    // Form data to query object
-    const formData = new FormData(this.form);
-    const params = Object.fromEntries(formData);
+    // Form data to query object with removed empty values
+    const params = Object.fromEntries([...new FormData(this.form)].filter(([_, v]) => v !== ""));
 
     // Make sure query is at least 3 characters
     if (params.q.length < 3) {
@@ -78,11 +43,7 @@ class PDOKSuggest {
       return;
     }
 
-    // Additional query parameters
-    params.rows = 5;
-    params.fq = "type:adres";
-    params.fl = "id,weergavenaam,centroide_ll";
-
+    // Search PDOK Locatieserver
     this.query(params);
   }
 

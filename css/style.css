@@ -13,6 +13,30 @@ body {
   padding: 0;
 }
 
+.header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  justify-content: space-between;
+  margin-bottom: 1em;
+}
+.header .title {
+  align-items: center;
+  display: flex;
+  font-size: 1.5em;
+  gap: 0.5em;
+  margin: 0;
+}
+.header .badge {
+  font-size: 0.6em;
+  font-weight: 600;
+}
+.header .info {
+  font-size: 0.85em;
+  margin: 0;
+}
+
 .tab-content {
   background-color: white;
   border-radius: var(--border-radius);
@@ -42,9 +66,9 @@ body {
 }
 
 .map {
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 12;
   border-radius: var(--border-radius);
-  margin-top: 3em;
+  margin-top: 2em;
   position: relative;
   z-index: 1;
 }
@@ -60,4 +84,8 @@ body {
   margin: 0;
   min-height: 5em;
   padding: 0.5em;
+}
+.response:empty::after {
+  color: #ccc;
+  content: "Resultaten worden hier weergegeven";
 }
